@@ -1,4 +1,4 @@
-import { Schema, model, models, Document, Model } from 'mongoose';
+import { Schema, model, models, Document, Model } from "mongoose";
 
 // Strongly-typed Event document shape
 export interface EventAttrs {
@@ -31,16 +31,16 @@ const slugify = (value: string): string =>
     .toString()
     .trim()
     .toLowerCase()
-    .replace(/[^a-z0-9\s-]/g, '') // remove invalid chars
-    .replace(/\s+/g, '-') // spaces to dashes
-    .replace(/-+/g, '-') // collapse duplicate dashes
-    .replace(/^-|-$/g, ''); // trim leading/trailing dashes
+    .replace(/[^a-z0-9\s-]/g, "") // remove invalid chars
+    .replace(/\s+/g, "-") // spaces to dashes
+    .replace(/-+/g, "-") // collapse duplicate dashes
+    .replace(/^-|-$/g, ""); // trim leading/trailing dashes
 
 // Helper to ensure date is always stored as ISO (YYYY-MM-DD)
 const normalizeDate = (value: string): string => {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) {
-    throw new Error('Invalid event date');
+    throw new Error("Invalid event date");
   }
   return date.toISOString().slice(0, 10); // YYYY-MM-DD
 };
@@ -52,18 +52,18 @@ const normalizeTime = (value: string): string => {
   // Support simple HH:MM or H:MM (24h) inputs
   const match = trimmed.match(/^(\d{1,2}):(\d{2})$/);
   if (!match) {
-    throw new Error('Invalid event time format. Expected HH:MM (24h).');
+    throw new Error("Invalid event time format. Expected HH:MM (24h).");
   }
 
   const hours = Number(match[1]);
   const minutes = Number(match[2]);
 
   if (hours < 0 || hours > 23 || minutes < 0 || minutes > 59) {
-    throw new Error('Invalid event time value.');
+    throw new Error("Invalid event time value.");
   }
 
-  const hh = hours.toString().padStart(2, '0');
-  const mm = minutes.toString().padStart(2, '0');
+  const hh = hours.toString().padStart(2, "0");
+  const mm = minutes.toString().padStart(2, "0");
   return `${hh}:${mm}`;
 };
 
@@ -88,32 +88,34 @@ const EventSchema = new Schema<EventDoc, EventModel>(
     // Automatically manage createdAt / updatedAt fields
     timestamps: true,
     // Disallow unknown fields for safer writes
-    strict: 'throw',
+    strict: "throw",
   }
 );
 
 // Pre-save hook: validate required fields, generate slug, and normalize date/time
-EventSchema.pre<EventDoc>('save', function preSave(next) {
+EventSchema.pre<EventDoc>("save", function preSave(next) {
   try {
     // Basic non-empty validation for required string fields
     const requiredStringFields: Array<keyof EventAttrs> = [
-      'title',
-      'description',
-      'overview',
-      'image',
-      'venue',
-      'location',
-      'date',
-      'time',
-      'mode',
-      'audience',
-      'organizer',
+      "title",
+      "description",
+      "overview",
+      "image",
+      "venue",
+      "location",
+      "date",
+      "time",
+      "mode",
+      "audience",
+      "organizer",
     ];
 
     for (const field of requiredStringFields) {
       const value = this[field];
-      if (typeof value !== 'string' || value.trim().length === 0) {
-        throw new Error(`Field "${String(field)}" is required and cannot be empty.`);
+      if (typeof value !== "string" || value.trim().length === 0) {
+        throw new Error(
+          `Field "${String(field)}" is required and cannot be empty.`
+        );
       }
       // Persist trimmed values
       this[field] = value.trim();
@@ -121,10 +123,14 @@ EventSchema.pre<EventDoc>('save', function preSave(next) {
 
     // Validate that agenda and tags arrays are not empty and contain strings
     if (!Array.isArray(this.agenda) || this.agenda.length === 0) {
-      throw new Error('Field "agenda" is required and must contain at least one item.');
+      throw new Error(
+        'Field "agenda" is required and must contain at least one item.'
+      );
     }
     if (!Array.isArray(this.tags) || this.tags.length === 0) {
-      throw new Error('Field "tags" is required and must contain at least one item.');
+      throw new Error(
+        'Field "tags" is required and must contain at least one item.'
+      );
     }
 
     // Normalize date and time to consistent formats
@@ -132,7 +138,7 @@ EventSchema.pre<EventDoc>('save', function preSave(next) {
     this.time = normalizeTime(this.time);
 
     // Only regenerate slug when the title changes
-    if (this.isModified('title') || !this.slug) {
+    if (this.isModified("title") || !this.slug) {
       this.slug = slugify(this.title);
     }
 
@@ -142,6 +148,7 @@ EventSchema.pre<EventDoc>('save', function preSave(next) {
   }
 });
 
-export const Event: EventModel = models.Event || model<EventDoc, EventModel>('Event', EventSchema);
+export const Event: EventModel =
+  models.Event || model<EventDoc, EventModel>("Event", EventSchema);
 
 export default Event;

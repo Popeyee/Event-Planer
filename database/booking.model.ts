@@ -1,5 +1,5 @@
-import { Schema, model, models, Document, Model, Types } from 'mongoose';
-import { Event, EventDoc } from './event.model';
+import { Schema, model, models, Document, Model, Types } from "mongoose";
+import { Event, EventDoc } from "./event.model";
 
 // Attributes required to create a Booking
 export interface BookingAttrs {
@@ -22,7 +22,7 @@ const BookingSchema = new Schema<BookingDoc, BookingModel>(
   {
     eventId: {
       type: Schema.Types.ObjectId,
-      ref: 'Event',
+      ref: "Event",
       required: true,
       index: true, // index for faster lookups by event
     },
@@ -35,23 +35,26 @@ const BookingSchema = new Schema<BookingDoc, BookingModel>(
   },
   {
     timestamps: true,
-    strict: 'throw',
+    strict: "throw",
   }
 );
 
 // Pre-save hook: validate email format and ensure referenced event exists
-BookingSchema.pre<BookingDoc>('save', async function preSave(next) {
+BookingSchema.pre<BookingDoc>("save", async function preSave(next) {
   try {
     // Validate email format early to avoid unnecessary DB round-trips
     if (!this.email || !emailRegex.test(this.email)) {
-      throw new Error('A valid email address is required.');
+      throw new Error("A valid email address is required.");
     }
     this.email = this.email.trim().toLowerCase();
 
     // Ensure the referenced event exists before creating a booking
-    const event: EventDoc | null = await Event.findById(this.eventId).select('_id').lean();
+    // We don't care about the full document here, just whether it exists.
+    const event = await Event.findById(this.eventId).select("_id").lean();
     if (!event) {
-      throw new Error('Cannot create booking: referenced event does not exist.');
+      throw new Error(
+        "Cannot create booking: referenced event does not exist."
+      );
     }
 
     next();
@@ -61,6 +64,6 @@ BookingSchema.pre<BookingDoc>('save', async function preSave(next) {
 });
 
 export const Booking: BookingModel =
-  models.Booking || model<BookingDoc, BookingModel>('Booking', BookingSchema);
+  models.Booking || model<BookingDoc, BookingModel>("Booking", BookingSchema);
 
 export default Booking;
