@@ -1,4 +1,4 @@
-import mongoose, { Connection, Mongoose } from 'mongoose';
+import mongoose, { Connection, Mongoose } from "mongoose";
 
 /**
  * The shape of our cached MongoDB connection stored on the global object.
@@ -46,10 +46,10 @@ if (!global._mongoose) {
  * Throws an error if `MONGODB_URI` is not defined.
  */
 export async function connectToDatabase(): Promise<Mongoose> {
-  const uri = process.env.MONGODB_URI;
+  const uri = process.env.MONGODB_URL;
 
   if (!uri) {
-    throw new Error('Please define the MONGODB_URI environment variable.');
+    throw new Error("Please define the MONGODB_URL environment variable.");
   }
 
   // If we already have an active connection, reuse it.

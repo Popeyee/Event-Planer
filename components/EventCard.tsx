@@ -1,25 +1,24 @@
+import { EventAttrs } from "@/database";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
 
-interface Props {
-  title: string;
-  image: string;
-  slug: string;
-  location: string;
-  date: string;
-  time: string;
-}
-
-const EventCard = ({ title, image, slug, location, date, time }: Props) => {
+const EventCard = ({
+  title,
+  image,
+  slug,
+  location,
+  date,
+  time,
+}: EventAttrs) => {
   return (
-    <Link href={`/events${slug}`} id="event-card">
+    <Link href={`/events/${slug}`} id="event-card">
       <Image
         src={image}
         alt={title}
         width={410}
         height={300}
         className="poster"
+        loading="eager"
       />
 
       <div className="flex gap-2 flex-row">
