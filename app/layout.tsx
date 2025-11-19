@@ -44,7 +44,9 @@ export default function RootLayout({
             distortion={0.05}
           />
         </div>
-        <main>{children}</main>
+        <Suspense fallback={<div>Loading...</div>}>
+          <main>{children}</main>
+        </Suspense>
       </body>
     </html>
   );

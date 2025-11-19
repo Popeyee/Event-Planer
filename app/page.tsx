@@ -28,7 +28,6 @@ const Homepage = async () => {
     // events = data.events || [];
   } catch (error) {
     console.error("Error fetching events:", error);
-    // Handle error appropriately - maybe show an error message
   }
 
   return (
