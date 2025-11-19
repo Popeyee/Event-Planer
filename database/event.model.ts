@@ -3,7 +3,7 @@ import { Schema, model, models, Document, Model } from "mongoose";
 // Strongly-typed Event document shape
 export interface EventAttrs {
   title: string;
-  slug?: string; // generated from title
+  slug: string; // generated from title
   description: string;
   overview: string;
   image: string;
