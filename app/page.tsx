@@ -1,7 +1,7 @@
 import EventCard from "@/components/EventCard";
 import ExploreBtn from "@/components/ExploreBtn";
 import { cacheLife } from "next/cache";
-import events, { EventItem } from "@/lib/constants";
+import { EventItem } from "@/lib/constants";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 // export const revalidate = 10; // cache homepage for up to 10 seconds
@@ -17,15 +17,15 @@ const Homepage = async () => {
     );
   }
 
-  // let events = [];
+  let events = [];
 
   try {
-    // const response = await fetch(`${BASE_URL}/api/events`);
-    // if (!response.ok) {
-    //   throw new Error(`Failed to fetch events: ${response.status}`);
-    // }
-    // const data = await response.json();
-    // events = data.events || [];
+    const response = await fetch(`${BASE_URL}/api/events`);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch events: ${response.status}`);
+    }
+    const data = await response.json();
+    events = data.events || [];
   } catch (error) {
     console.error("Error fetching events:", error);
   }
