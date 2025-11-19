@@ -7,7 +7,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 // export const revalidate = 10; // cache homepage for up to 10 seconds
 const Homepage = async () => {
   "use cache";
-  cacheLife("seconds");
+  cacheLife("minutes");
   if (!BASE_URL) {
     console.error("NEXT_PUBLIC_BASE_URL is not defined");
     return (

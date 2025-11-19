@@ -5,6 +5,7 @@ import { Event, EventDoc } from "./event.model";
 export interface BookingAttrs {
   eventId: Types.ObjectId;
   email: string;
+  slug: string;
 }
 
 // Booking document as stored in MongoDB
@@ -27,6 +28,12 @@ const BookingSchema = new Schema<BookingDoc, BookingModel>(
       index: true, // index for faster lookups by event
     },
     email: {
+      type: String,
+      required: true,
+      trim: true,
+      lowercase: true,
+    },
+    slug: {
       type: String,
       required: true,
       trim: true,

@@ -5,6 +5,7 @@ import EventDetailItem from "@/components/EventDetailItem";
 import EventTags from "@/components/EventTags";
 import { EventAttrs } from "@/database";
 import { getSimilarEventBySlug } from "@/lib/actions/event.actions";
+import { cacheLife } from "next/cache";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
@@ -12,6 +13,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 // Shape of the event returned from the /api/events/[slug] endpoint.
 type EventData = {
+  _id: string;
   description: string;
   title: string;
   image: string;
@@ -31,6 +33,8 @@ const EventDetailsPage = async ({
 }: {
   params: Promise<{ slug: string }>;
 }) => {
+  "use cache";
+  cacheLife("minutes");
   const { slug } = await params;
 
   let eventData: EventData | null = null;
@@ -60,6 +64,7 @@ const EventDetailsPage = async ({
   }
 
   const {
+    _id,
     description,
     title,
     image,
@@ -99,9 +104,13 @@ const EventDetailsPage = async ({
           <Image
             src={image}
             alt="event banner"
-            width={800}
-            height={800}
+            // Wider intrinsic size and 16:9 ratio for better quality on desktops
+            width={1200}
+            height={675}
             className="banner"
+            quality={85}
+            sizes="(min-width: 1024px) 66vw, 100vw"
+            priority
           />
 
           <section className="flex-col-gap-2">
@@ -154,7 +163,7 @@ const EventDetailsPage = async ({
             ) : (
               <p className="text-sm">Be the first to book your spot</p>
             )}
-            <BookEvent />
+            <BookEvent eventId={_id} slug={slug} />
           </div>
         </aside>
       </div>

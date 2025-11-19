@@ -15,10 +15,14 @@ const EventCard = ({
       <Image
         src={image}
         alt={title}
-        width={410}
-        height={300}
+        // Use a higher intrinsic resolution so images stay sharp on larger screens
+        width={800}
+        height={600}
         className="poster"
-        loading="eager"
+        quality={85}
+        // Responsive sizes so Next.js picks an appropriate size for each viewport
+        sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+        loading="lazy"
       />
 
       <div className="flex gap-2 flex-row">
