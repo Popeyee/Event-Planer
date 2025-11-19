@@ -8,4 +8,3 @@ posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
   debug: process.env.NODE_ENV === "development",
   session_recording: false,
 });
-●
